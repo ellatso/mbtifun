@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <audio id="bgMusic" src="dancingmoonlight.mp3" loop preload="auto"></audio>
+    <title>人格類型大全</title>
+    <link rel="stylesheet" href="card.css">
+</head>
+<body>
+    <!-- Hero 區域 -->
+    <section class="hero-section" id="hero">
+        <h1>🎭 人格類型大探索</h1>
+        <p>歡迎來到奇葩人格博物館！這裡收藏了各種令人嘖嘖稱奇的人格類型，每一種都有著獨特的魅力和讓人哭笑不得的特質。</p>
+        <button class="show-personalities-btn" onclick="showPersonalities()">
+            🔍 探索所有人格類型
+        </button>
+    </section>
+
+    <!-- 人格展示區域 -->
+    <section class="personalities-section" id="personalities">
+        <h2 class="section-title">🎪 人格類型大全</h2>
+        <div class="personalities-grid" id="personalitiesGrid">
+            <!-- 人格卡片將通過 JavaScript 動態生成 -->
+        </div>
+    </section>
+
+    <!-- 回到 Hero 區按鈕 -->
+    <a href="lovesim.html" id="back-to-hero" class="back-btn" title="返回首頁區域">⬆ 回到首頁</a>
+
+    <script src="card.js"></script>
+</body>
+</html>
