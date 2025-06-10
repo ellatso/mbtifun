@@ -6,7 +6,7 @@ const personalityTable = {
         clash: ["MEAN"],
         desc: "耳根子軟，被人召喚就出現，簡直是行走的免費勞動力。",
         explain: "你是那種無法拒絕他人請求的人，別人一撒嬌你就腿軟。天天被人使喚還沾沾自喜覺得自己有人緣，殊不知你只是別人的工具而已。",
-        image: "tool.png"
+        image: "tool.gif"
     },
     "IMBT": {
         quote: "我不是變態，我只是品味異於常人",
@@ -172,7 +172,11 @@ function showPersonalities() {
     document.getElementById('hero').style.display = 'none';
     document.getElementById('personalities').classList.add('active');
     document.getElementById('back-to-hero').classList.add('show');
-    
+    document.getElementById('slotMachine').style.display = 'none';
+    document.getElementById('gomokuGame').style.display = 'none';
+    document.getElementById('snakeGame').style.display = 'none';
+    document.getElementById('memoryGame').style.display = 'none';
+
     // 生成卡片（如果還沒生成）
     if (document.getElementById('personalitiesGrid').children.length === 0) {
         generatePersonalityCards();
@@ -196,3 +200,366 @@ function backToHero() {
 document.addEventListener('DOMContentLoaded', function() {
     // 可以在這裡添加其他初始化邏輯
 });
+
+/* ----------------  拉霸機常數 ---------------- */
+const slotSymbols = ['🎮', '💕', '🎯']; // 3 種圖示即可
+// 三連圖示 => game key
+const gameMapping = {
+  '🎮🎮🎮': 'snake',   // 🎮 → 貪吃蛇
+  '💕💕💕': 'gomoku',  // 💕 → 五子棋
+  '🎯🎯🎯': 'memory'  // 🎯 → 翻牌配對
+};
+
+let spinning = false;
+
+/* ------------- 顯示拉霸機區 --------------- */
+function showSlotMachine () {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('personalities').classList.add('active');
+  document.getElementById('slotMachine').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ------------- 拉霸機轉動 --------------- */
+function spinSlots(){
+  if(spinning) return;
+  spinning = true;
+  const reels = ['slot1','slot2','slot3'].map(id=>document.getElementById(id));
+  const btn   = document.getElementById('spinButton');
+  const info  = document.getElementById('slotResult');
+
+  btn.disabled = true; btn.textContent='轉動中…'; info.textContent='';
+
+  // 個別 interval, 個別停靠時間
+  const intervals = [];
+  const stopDelays = [1800, 2300, 2900];  // 第1輪先停 → 最後一輪壓軸
+  reels.forEach((el,i)=>{
+    el.classList.add('spinning');
+    intervals[i] = setInterval(()=>{
+      el.textContent = slotSymbols[Math.random()*slotSymbols.length|0];
+    }, 70 + i*20);                       // 每輪速度略不同
+  });
+
+  // 最終結果陣列 (一次決定)
+  const final = generateResult();
+
+  // 依 stopDelays 依序停止
+  reels.forEach((el,i)=>{
+    setTimeout(()=>{
+      clearInterval(intervals[i]);
+      el.classList.remove('spinning');
+      el.textContent = final[i];
+      // 最後一輪停下後再判定結果
+      if(i===2){
+        showGamePrompt(final.join(''));
+        spinning=false;
+        btn.disabled=false;
+        btn.textContent='再轉一次！';
+      }
+    }, stopDelays[i]);
+  });
+}
+
+/* ---------- 產生結果：4 成機率中獎 ---------- */
+function generateResult () {
+  if (Math.random() < 0.9) {                 // 40% 三連圖
+    const s = slotSymbols[Math.random() * slotSymbols.length | 0];
+    return [s, s, s];
+  }
+  return slotSymbols.map(() => slotSymbols[Math.random() * slotSymbols.length | 0]);
+}
+
+/* ---------- 依結果顯示啟動對應遊戲 ---------- */
+function showGamePrompt (key) {
+  const info = document.getElementById('slotResult');
+  if (gameMapping[key]) {
+    const game = gameMapping[key];
+    const label = game === 'snake'  ? '🐍 貪吃蛇'
+               : game === 'gomoku' ? '⚫⚪ 五子棋'
+               : '🂠 翻牌配對';
+
+    info.innerHTML = `
+      🎉 ${key}！<br><strong>啟動：${label}</strong><br>
+      <button onclick="startMiniGame('${game}')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#ff9800,#ff5722);
+  color:#fff; border:none; padding:.8rem 1.6rem;
+  border-radius:50px; font-size:1.1rem; cursor:pointer;
+  box-shadow:0 4px 15px rgba(255,152,0,.4);
+  transition:.3s;">
+       開始遊戲
+      </button>
+    `;
+  } else {
+    info.textContent = `${key} → 沒中，再試一次！`;
+  }
+}
+
+/* ---------- 開始小遊戲 ↔ 回拉霸機 ---------- */
+function startMiniGame (type) {
+  // 隱藏 slotMachine，顯示指定遊戲
+  ['gomokuGame','snakeGame','memoryGame','slotMachine'].forEach(id =>
+    document.getElementById(id).style.display = (id === `${type}Game` ? 'block' : 'none')
+  );
+
+  if (type === 'gomoku')  initGomoku();
+  if (type === 'snake')   initSnake();
+  if (type === 'memory')  initMemory();
+}
+
+function backToSlotMachine () {
+  ['gomokuGame','snakeGame','memoryGame'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById('slotMachine').style.display = 'block';
+}
+
+/* ======= 工具：section 切換 ======= */
+function showSection(id){
+  ['gomokuGame','snakeGame','memoryGame','slotMachine']
+    .forEach(sec=>document.getElementById(sec).style.display = (sec===id? 'block':'none'));
+}
+/* 在 slot 機結果觸發 */
+function startMiniGame(type){
+  if(type==='gomoku')   initGomoku();
+  if(type==='snake')    initSnake();
+  if(type==='memory')   initMemory();
+}
+/* 返回 slot */
+function backToSlotMachine(){
+  showSection('slotMachine');
+}
+
+/* ============ (1) 五子棋 (最簡單 9×9, 玩家 vs. 隨機 AI) ============ */
+function initGomoku(){
+  showSection('gomokuGame');
+  const cvs = document.getElementById('gomokuCanvas');
+  const ctx = cvs.getContext('2d');
+  const size = 9, cell = cvs.width/size;
+  const board = Array.from({length:size},()=>Array(size).fill(0)); // 0空1黑2白
+  let turn = 1; // 玩家先(1)
+
+  draw();
+  cvs.onclick = e=>{
+    const x = Math.floor(e.offsetX/cell);
+    const y = Math.floor(e.offsetY/cell);
+    if(board[y][x]!==0) return;
+    board[y][x]=1; draw();
+    if(checkWin(1)){ end('你贏了!'); return; }
+    aiMove(); draw();
+    if(checkWin(2)){ end('AI 贏了'); }
+  };
+  function aiMove(){
+  // 1. 若玩家下一步會贏，優先擋下來
+  for(let y=0; y<size; y++){
+    for(let x=0; x<size; x++){
+      if(board[y][x]!==0) continue;
+      board[y][x] = 1;
+      if(checkWin(1)) { board[y][x] = 2; return; } // 擋住玩家
+      board[y][x] = 0;
+    }
+  }
+
+  // 2. 嘗試讓 AI 自己贏
+  for(let y=0; y<size; y++){
+    for(let x=0; x<size; x++){
+      if(board[y][x]!==0) continue;
+      board[y][x] = 2;
+      if(checkWin(2)) return; // 自己能贏就贏
+      board[y][x] = 0;
+    }
+  }
+
+  // 3. 嘗試下在自己連三的位置
+  const score = (x, y, player) => {
+    const dir = [[1,0],[0,1],[1,1],[1,-1]];
+    let max = 0;
+    for(const [dx, dy] of dir){
+      let count = 0;
+      for(let k=1; k<5; k++){
+        const nx = x + dx * k;
+        const ny = y + dy * k;
+        if(nx<0||ny<0||nx>=size||ny>=size) break;
+        if(board[ny][nx] === player) count++;
+        else break;
+      }
+      max = Math.max(max, count);
+    }
+    return max;
+  };
+
+  let bestX = -1, bestY = -1, bestScore = -1;
+  for(let y=0; y<size; y++){
+    for(let x=0; x<size; x++){
+      if(board[y][x]!==0) continue;
+      const s = score(x, y, 2); // AI 目前下這格會變幾連
+      if(s > bestScore) {
+        bestScore = s;
+        bestX = x;
+        bestY = y;
+      }
+    }
+  }
+
+  if(bestX !== -1 && bestY !== -1) {
+    board[bestY][bestX] = 2;
+    return;
+  }
+
+  // 4. 若都沒有，隨機亂下
+  let x, y;
+  do {
+    x = Math.floor(Math.random() * size);
+    y = Math.floor(Math.random() * size);
+  } while(board[y][x] !== 0);
+  board[y][x] = 2;
+}
+
+
+  function draw(){
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    ctx.strokeStyle='#555';
+    for(let i=0;i<size;i++){
+      ctx.beginPath(); ctx.moveTo(i*cell+cell/2,cell/2);
+      ctx.lineTo(i*cell+cell/2,cvs.height-cell/2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cell/2,i*cell+cell/2);
+      ctx.lineTo(cvs.width-cell/2,i*cell+cell/2); ctx.stroke();
+    }
+    for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+      if(board[y][x]){
+        ctx.fillStyle = board[y][x]==1?'#000':'#fff';
+        ctx.beginPath();
+        ctx.arc(x*cell+cell/2,y*cell+cell/2,cell/3,0,Math.PI*2);
+        ctx.fill(); ctx.stroke();
+      }
+    }
+  }
+  function checkWin(p){
+    const dir=[[1,0],[0,1],[1,1],[1,-1]];
+    for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(board[y][x]==p){
+      for(const [dx,dy] of dir){
+        let cnt=0; for(let k=0;k<5;k++){
+          const nx=x+k*dx, ny=y+k*dy;
+          if(board[ny]?.[nx]==p) cnt++; else break;
+        }
+        if(cnt==5) return true;
+      }
+    }
+    return false;
+  }
+  function end(msg){ document.getElementById('gomokuMsg').innerText=msg; cvs.onclick=null;}
+}
+
+/* ============ (2) 貪吃蛇 (最小版 15×15) ============ */
+function initSnake(){
+  showSection('snakeGame');
+  const cvs=document.getElementById('snakeCanvas');
+  const ctx=cvs.getContext('2d');
+  const grid=15, size=cvs.width/grid;
+  let snake=[[7,7]], dir=[1,0], food=[3,3], score=0, running=true;
+
+  document.onkeydown=e=>{
+    if(e.key==='ArrowUp'   && dir[1]!==1) dir=[0,-1];
+    if(e.key==='ArrowDown' && dir[1]!==-1) dir=[0,1];
+    if(e.key==='ArrowLeft' && dir[0]!==1) dir=[-1,0];
+    if(e.key==='ArrowRight'&& dir[0]!==-1)dir=[1,0];
+  };
+
+  const loop=setInterval(()=>{
+    if(!running) return;
+    const head=[snake[0][0]+dir[0], snake[0][1]+dir[1]];
+    if(head[0]<0||head[0]>=grid||head[1]<0||head[1]>=grid||
+       snake.some(s=>s[0]==head[0]&&s[1]==head[1])){
+      running=false; clearInterval(loop); alert('GG! 得分:'+score); backToSlotMachine(); return;
+    }
+    snake.unshift(head);
+    if(head[0]==food[0]&&head[1]==food[1]){
+      score++; document.getElementById('snakeScore').innerText='得分：'+score;
+      do{ food=[Math.floor(Math.random()*grid),Math.floor(Math.random()*grid)];}
+      while(snake.some(s=>s[0]==food[0]&&s[1]==food[1]));
+    }else{ snake.pop(); }
+    draw();
+  },200);
+  function draw(){
+    ctx.fillStyle='#fafafa'; ctx.fillRect(0,0,cvs.width,cvs.height);
+    ctx.fillStyle='#4caf50';
+    snake.forEach(([x,y])=>ctx.fillRect(x*size,y*size,size-2,size-2));
+    ctx.fillStyle='#e91e63';
+    ctx.fillRect(food[0]*size,food[1]*size,size-2,size-2);
+  }
+}
+
+/* ============ (3) 翻牌配對 (4×4 – 含愛心機制) ============ */
+function initMemory () {
+  showSection('memoryGame');        // 切換區塊
+  const grid   = document.getElementById('memoryGrid');
+  const msgElm = document.getElementById('memoryMsg');
+
+  grid.innerHTML = '';
+  msgElm.textContent = '';
+  document.getElementById('memoryLives').innerHTML = '❤️❤️❤️❤️❤️❤️❤️❤️❤️';
+
+  const icons = ['🍕','🍔','🍟','🍫','🍩','🍉','🍓','🍇'];
+  const deck  = [...icons, ...icons].sort(() => Math.random() - 0.5);
+
+  let opened = [];          // 目前翻開卡 (0~2)
+  let matched = 0;          // 已配對數
+  let lives = 10;            // 生命值
+
+  deck.forEach(icon => {
+    const card = document.createElement('div');
+    card.className = 'memory-card';
+    card.dataset.icon = icon;
+
+    card.onclick = () => {
+      // 已翻開兩張 or 自己已是 open → 直接返回
+      if (opened.length === 2 || card.classList.contains('open')) return;
+
+      card.classList.add('open');
+      card.textContent = icon;
+      opened.push(card);
+
+      /* 兩張都翻開後判斷 */
+      if (opened.length === 2) {
+        const [c1, c2] = opened;
+
+        if (c1.dataset.icon === c2.dataset.icon) {
+          // 配對成功
+          matched += 2;
+          opened = [];
+
+          if (matched === 16) {
+            msgElm.textContent = '🎉 全部配對完成！';
+          }
+        } else {
+          // 配對失敗 – 0.8 秒後翻回去
+          lives--;
+          updateLivesDisplay(lives);
+
+          const toClose = [...opened];   // 複製目前兩張
+          opened = [];                   // 先清空防止再點
+          setTimeout(() => {
+            toClose.forEach(card => {
+              card.classList.remove('open');
+              card.textContent = '';
+            });
+          }, 800);
+
+          if (lives === 0) {
+            msgElm.textContent = '💔 GAME OVER！';
+            // 失敗後禁止再翻
+            grid.querySelectorAll('.memory-card').forEach(card => card.onclick = null);
+          }
+        }
+      }
+    };
+
+    grid.appendChild(card);
+  });
+
+  /* 生命值顯示更新 */
+  function updateLivesDisplay (n) {
+    const hearts = '❤️'.repeat(n) + '🖤'.repeat(10 - n);
+    document.getElementById('memoryLives').innerHTML = hearts;
+  }
+}
+
+

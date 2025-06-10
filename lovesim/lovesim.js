@@ -9,7 +9,7 @@ const personalityTable = {
     clash: ["MEAN"],
     desc: "耳根子軟，被人召喚就出現，簡直是行走的免費勞動力。",
     explain: "你是那種無法拒絕他人請求的人，別人一撒嬌你就腿軟。天天被人使喚還沾沾自喜覺得自己有人緣，殊不知你只是別人的工具而已。",
-    image: "tool.png"
+    image: "tool.gif"
   },
   "IMBT": {
     quote: "我不是變態，我只是品味異於常人",
@@ -298,6 +298,7 @@ document.addEventListener('click',()=>{
     bgAudio.play().catch(()=>{});
   }
 },{once:true});
+
 
 
 

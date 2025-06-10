@@ -8,26 +8,75 @@
     <link rel="stylesheet" href="card.css">
 </head>
 <body>
-    <!-- Hero 區域 -->
     <section class="hero-section" id="hero">
         <h1>🎭 人格類型大探索</h1>
         <p>歡迎來到奇葩人格博物館！這裡收藏了各種令人嘖嘖稱奇的人格類型，每一種都有著獨特的魅力和讓人哭笑不得的特質。</p>
-        <button class="show-personalities-btn" onclick="showPersonalities()">
-            🔍 探索所有人格類型
-        </button>
+        <button class="show-personalities-btn" onclick="showPersonalities()">🔍 探索所有人格類型</button>
     </section>
 
-    <!-- 人格展示區域 -->
-    <section class="personalities-section" id="personalities">
-        <h2 class="section-title">🎪 人格類型大全</h2>
-        <div class="personalities-grid" id="personalitiesGrid">
-            <!-- 人格卡片將通過 JavaScript 動態生成 -->
+    <title>人格類型大全</title>    <!-- 拉霸機遊戲區域 -->
+    <section class="slot-machine-section" id="slotMachine" >
+
+        <h2 class="section-title">🎰 人格遊戲拉霸機</h2>
+        <div class="slot-machine">
+            <div class="slot-display">
+                <div class="slot-reel" id="slot1">🎮</div>
+                <div class="slot-reel" id="slot2">💕</div>
+                <div class="slot-reel" id="slot3">🎯</div>
+            </div>
+            <button class="slot-button" id="spinButton" onclick="spinSlots()">
+                🎰 開始轉動！
+            </button>
+            <div class="slot-result" id="slotResult"></div>
         </div>
     </section>
 
-    <!-- 回到 Hero 區按鈕 -->
+   
+<!-- 🟡 五子棋 -->
+<section class="game-section" id="gomokuGame" style="display:none;">
+  <h2 class="section-title">⚫⚪ 五子棋 (vs. 隨機 AI)</h2>
+  <div class="game-container">
+    <canvas id="gomokuCanvas" width="300" height="300"></canvas>
+    <p id="gomokuMsg"></p>
+    <button class="back-button" onclick="backToSlotMachine()">返回拉霸機</button>
+  </div>
+</section>
+
+<!-- 🟢 貪吃蛇 -->
+<section class="game-section" id="snakeGame" style="display:none;">
+  <h2 class="section-title">🐍 貪吃蛇</h2>
+  <div class="game-container">
+    <canvas id="snakeCanvas" width="300" height="300"></canvas>
+    <p id="snakeScore">得分：0</p>
+    <button class="back-button" onclick="backToSlotMachine()">返回拉霸機</button>
+  </div>
+</section>
+
+<!-- 🔴 翻牌配對 -->
+<section class="game-section" id="memoryGame" style="display:none;">
+  <h2 class="section-title">🂠 翻牌配對</h2>
+  <div class="game-container">
+    <div id="memoryGrid" class="memory-grid"></div>
+    <p id="memoryMsg"></p>
+    <!-- lives 顯示 -->
+    <div class="lives"><span id="memoryLives">❤️❤️❤️❤️❤️❤️❤️❤️❤️</span></div>
+
+    <button class="back-button" onclick="backToSlotMachine()">返回拉霸機</button>
+  </div>
+
+</section>
+
+    <section class="personalities-section" id="personalities">
+        <h2 class="section-title">🎪 人格類型大全</h2>
+        <div class="personalities-grid" id="personalitiesGrid">
+\        </div>
+
+    </section>
+
     <a href="lovesim.html" id="back-to-hero" class="back-btn" title="返回首頁區域">⬆ 回到首頁</a>
 
     <script src="card.js"></script>
+
+    
 </body>
 </html>

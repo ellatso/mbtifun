@@ -6,17 +6,17 @@
   <link rel="stylesheet" href="lovesim.css">
 </head>
 <body>
-  <!-- 背景音樂(預設靜音，loop) -->
+  <!-- 背景音樂-->
   <audio id="bgMusic" src="dancingmoonlight.mp3" loop preload="auto"></audio>
 
-  <!-- 🎵 音樂開關 -->
+  <!-- 音樂開關 -->
   <label class="music-toggle">
     <span class="note">♪</span>
     <input type="checkbox" id="musicSwitch">
     <span class="slider"></span>
   </label>
 
-   <!-- 四層動態雲 SVG 背景 -->
+   <!-- 四層雲背景 -->
   <div class="cloud-wrapper">
     <!-- 左上角雲朵 -->
     <svg class="cloud-layer layer1" viewBox="0 0 500 260" preserveAspectRatio="none">
@@ -51,7 +51,7 @@
     </svg>
   </div>
 
- <!-- ⬇︎ 主題切換小開關 -->
+ <!--主題切換小開關 -->
 <label class="theme-toggle">
   <span class="note"> 🌙</span>
   <input type="checkbox" id="themeSwitch">
@@ -82,8 +82,9 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   
-  <!-- 回到 Hero 區按鈕 -->
+  <!-- Hero -->
   <a href="card.html" id="back-to-hero" class="back-btn" itle="返回首頁區域">⬆ 所有人格介紹</a>
+
 
 </body>
 </html>
