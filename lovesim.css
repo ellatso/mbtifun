@@ -1,0 +1,478 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+    :root{
+  --bg-grad: linear-gradient(to bottom,#8c7ae6,#9b59b6,#fd79a8);
+  --card-bg:#ffffff;
+  --text-main:#333;
+  --btn-bg:#f8b500;
+  --btn-bg-h:#c96b00;
+}
+
+[data-theme="dark"]{
+  --bg-grad:linear-gradient(to bottom,#21219c,#b709b7);
+  --card-bg:#190941;
+  --text-main:#e4e4ff;
+  --btn-bg:#675cff;
+  --btn-bg-h:#5249e5;
+}
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      /*background: linear-gradient(to bottom, #8c7ae6, #9b59b6, #fd79a8); /* 紫到粉紅漸層 */
+      background:var(--bg-grad);
+      color:var(--text-main);
+      margin: 0;
+      padding: 0;
+      /*color: #333;*/
+      background-attachment: fixed;
+      background-size: cover;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      
+    }
+
+    /* 雲層背景效果 */
+    .cloud-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.cloud-layer{
+  position:absolute; width:200%; height:auto;
+  animation: zoomFloat 15s ease-in-out infinite,
+             cloudMove 60s linear infinite alternate;
+}
+.layer1 {top:10%;  left:0;    opacity:.4;}
+.layer2 {top:60%;  left:-20%; opacity:.5; animation-direction:alternate-reverse;}
+.layer3 {top:35%;  left:-10%; opacity:.6;}
+.layer4 {bottom:0; left:0;    opacity:.65;}
+
+/* 左右漂動畫：左→右→左 */
+@keyframes cloudMove {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50px); /* 可調幅度 */
+  }
+}
+
+/* 另一方向：右→左→右 */
+@keyframes cloudMoveRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(50px);
+  }
+}
+
+
+    .container {
+      
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+      /*background-color: #fff;*/
+      background:var(--card-bg); 
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      margin-top: 3rem;
+      margin-bottom: 3rem;
+      position: relative;
+      z-index: 1;
+      animation: floatIn 0.8s ease-out both;
+    }
+
+    @keyframes floatIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      padding-top: 2rem;
+    }
+
+    .intro {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--text-main);
+      margin-bottom: 3rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .question-box {
+      margin-bottom: 2rem;
+      background-color: #fff;
+      border-radius: 1.2rem;
+      padding: 1.8rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+      animation: floatIn 0.8s ease-out both;
+    }
+
+    .question-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .question-box:hover {
+      transform: scale(1.02);
+    }
+
+    button {
+     /*background-color: #f8b500;*/
+      background:var(--btn-bg);
+     color: white;
+    border: none;
+     padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+     border-radius: 0.5rem;
+      cursor: pointer;
+     margin-top: 1rem;
+    }
+
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin-bottom: 0.8rem;
+      padding: 1rem 1.2rem;
+      background-color: #9b84ff;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #fff;
+      font-weight: 500;
+      transition: all 0.2s ease-in-out;
+      text-align: left;
+      position: relative;
+      padding-left: 3.5rem;
+    }
+
+    .options button:before {
+      content: attr(data-letter);
+      position: absolute;
+      left: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .options button:hover {
+      background-color: #7c5bf2;
+      transform: scale(1.02);
+    }
+
+    #result-box {
+      text-align: center;
+      padding: 2rem;
+      
+    }
+
+    #result-box h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    #result-type {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #8c7ae6;
+      margin-bottom: 1rem;
+    }
+
+    #result-description {
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+      color: #444;
+      line-height: 1.6;
+      box-shadow:none !important;
+      background:transparent !important;
+      border-radius:0 !important;
+    }
+
+    button#restart-btn {
+      background-color: #8c7ae6;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 8px rgba(140, 122, 230, 0.3);
+    }
+
+    button#restart-btn:hover {
+      background-color: #7c5bf2;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(140, 122, 230, 0.4);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* 修改標題區塊樣式 */
+    .heading-container {
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .fade-in {
+      animation: fadeInScale 0.5s ease-out forwards;
+      opacity: 0;
+    }
+    .fade-in.delay1 { animation-delay: 0.3s; }
+    .fade-in.delay2 { animation-delay: 0.6s; }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+on-box {
+  animation: cardIn .7s cubic-bezier(.25,1.2,.35,1.0);
+}
+.options button {
+  position: relative;
+  overflow: hidden;                
+
+}
+.options button::after{
+  content:'';
+  position:absolute; inset:0;
+  background:rgba(245, 239, 239, 0.3);
+  border-radius:inherit;
+  transform:scale(0);
+  opacity:0;
+  transition:.4s;
+}
+.options button:active::after{
+  transform:scale(1.5);
+  opacity:1;
+  transition:0s;                 
+}
+progress {
+  appearance:none; width:100%;
+  height:8px; border-radius:5px;
+  overflow:hidden; margin-bottom:1.2rem;
+}
+progress::-webkit-progress-bar { background:#eee; }
+progress::-webkit-progress-value { background:#f8b500; }
+
+@keyframes zoomFloat {
+  0% { transform:scale(1) translateY(0);}
+  50%{ transform:scale(1.02) translateY(-5px);}
+  100%{transform:scale(1) translateY(0);}
+}
+.layer1,.layer2,.layer3,.layer4{ animation-name:zoomFloat,cloudMove;
+  animation-timing-function:ease-in-out,linear;
+  animation-iteration-count:infinite; }
+
+.result-main {
+  border-radius:1.2rem;
+  position:relative;
+  background:transparent !important;
+  box-shadow:none !important;
+  padding:2rem 0 0;
+}
+.result-main::before{
+  content:''; position:absolute; inset:-2px;
+  background:linear-gradient(45deg,#ff9c00,#8b66ff,#ff9c00);
+  background-size:400% 400%; animation:borderGlow 6s linear infinite;
+  z-index:-1;
+}
+@keyframes borderGlow{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+
+@keyframes rise {
+  0%  { transform:translateY(0)   scale(.6); opacity:1;}
+  100%{ transform:translateY(-120px) scale(1); opacity:0;}
+}
+
+/* ——— 再測一次按鈕（#result-box > button） ——— */
+#result-box button{
+  display:inline-block;
+  padding:1.2rem 2.4rem;   /* ⬆︎ 內距大一倍 */
+  font-size:1.25rem;       /* ⬆︎ 字體放大 */
+  font-weight:700;
+  border-radius:0.9rem;
+  background:#ff9800;
+  color:#fff;
+  box-shadow:0 6px 15px rgba(0,0,0,.15);
+  transition:transform .25s,box-shadow .25s;
+}
+
+#result-box button:hover{
+  transform:scale(1.08);            /* 滑過再放大 */
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+  background:#ff7800;
+}
+
+#result-box button:active{
+  transform:scale(0.95);
+}
+
+
+/* === Theme Toggle Switch === */
+.theme-toggle{
+  position:fixed; top:16px; right:16px;
+  z-index:9;
+}
+.theme-toggle input{ display:none; }
+.theme-toggle .slider{
+  width:50px; height:26px; border-radius:26px;
+  background:#ccc; display:inline-block;
+  position:relative; cursor:pointer;
+  transition:.3s;
+}
+.theme-toggle .slider::before{
+  content:''; position:absolute; left:4px; top:4px;
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; transition:.3s;
+}
+#themeSwitch:checked + .slider{
+  background:#675cff;                     /* 深色線條 */
+}
+#themeSwitch:checked + .slider::before{
+  transform:translateX(24px);
+}
+
+
+
+
+/* === 音樂開關 (同樣的 slider 樣式) === */
+.music-toggle{
+  position:fixed;              /* 與 theme-toggle 並排 */
+  top:60px; right:16px;        /* 你可依版位調整 */
+  z-index:9;
+}
+.music-toggle input{ display:none; }
+
+.music-toggle .slider{
+  width:50px; height:26px; border-radius:26px;
+  background:#ccc; display:inline-block;
+  position:relative; cursor:pointer; transition:.3s;
+}
+.music-toggle .slider::before{
+  content:''; position:absolute; left:4px; top:4px;
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; transition:.3s;
+}
+
+.music-toggle .note{
+  margin-left:6px; font-size:1.2rem; color:#fff;
+  text-shadow:0 0 3px rgba(0,0,0,.4);
+  pointer-events:none;
+}
+
+/* 打開 (播放) 狀態 */
+#musicSwitch:checked + .slider{
+  background:#f8b500;
+}
+#musicSwitch:checked + .slider::before{
+  transform:translateX(24px);
+}
+
+#back-to-hero {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s, background 0.3s;
+  opacity: 0.9;
+}
+#back-to-hero:hover {
+  background-color: #ff7e00;
+  transform: scale(1.05);
+}
+
+#reaction-game-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(20, 20, 30, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#reaction-game-box {
+  text-align: center;
+  color: white;
+  font-size: 1.5em;
+}
+
+#game-area {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 20px auto;
+  background-color: #333;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.reaction-target {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: red;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.hidden {
+  display: none;
+}
